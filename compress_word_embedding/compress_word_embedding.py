@@ -20,7 +20,7 @@ os.chdir(wd)
 
 from helper import sample_gumbel_noise
 from model_template.losses import squared_error
-from model_template.neuralnet import compress_word_embedding
+from model_template.neuralnet import compress_word_embedding_simple
 
 ### configuration ###
 F_temperature = 1.0 # temperature for Gumbel-Softmax Trick
@@ -70,7 +70,7 @@ def main():
     print("done. vocabulary: %d, dimension: %d" % (N_sample, N_dim))
 
     print("build prototype for encoder-decoder model...")
-    model = compress_word_embedding(N_dim=N_dim, N_h=dict_args["N_h"], N_k=dict_args["N_k"], N_m=dict_args["N_m"])
+    model = compress_word_embedding_simple(N_dim=N_dim, N_h=dict_args["N_h"], N_k=dict_args["N_k"], N_m=dict_args["N_m"], F_temperature=F_temperature)
     model.summary()
 
     model.compile(optimizer=cfg_optimizer[optimizer_name], loss=squared_error, metrics=[squared_error])
@@ -79,17 +79,8 @@ def main():
     for n_e in range(dict_args["N_epoch"]):
         print("epoch: %d" % n_e)
 
-        arry_idx_embedding = np.arange(N_sample)
-        np.random.shuffle(arry_idx_embedding)
-
-        for idx_minibatch in chunk(arry_idx_embedding, size=N_minibatch*1000):
-            # create input
-            lst_mat_x = [mat_embedding[idx_minibatch]]
-            lst_mat_x.extend(sample_gumbel_noise(N_minibatch=len(idx_minibatch), N_k=dict_args["N_k"], N_m=dict_args["N_m"], loc=0.0, scale=F_temperature))
-            mat_y = lst_mat_x[0]
-            # fit minibatch
-            model.fit(x=lst_mat_x, y=mat_y, batch_size=N_minibatch, epochs=1, verbose=0, validation_split=0.0,
-                      shuffle=False, callbacks=[progress_callback, TerminateOnNaN()])
+        model.fit(x=mat_embedding, y=mat_embedding, batch_size=N_minibatch, epochs=1, verbose=0, validation_split=0.01,
+                  shuffle=True, callbacks=[progress_callback, TerminateOnNaN()])
 
         # extract train-loss for n-th iteration
         train_loss = np.mean(progress_callback.running_logs["loss"])
