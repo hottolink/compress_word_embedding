@@ -15,7 +15,7 @@ from .noise_layers import GumbelNoise
 
 def compress_word_embedding(N_k, N_m, N_dim, N_h=None):
     """
-    (Variational) Auto-Encoder for compressing various embeddings, i.e. Word Embedding
+    (Denoising) Auto-Encoder for compressing various embeddings, i.e. Word Embedding
     :param N_k: number of codeword vectors
     :param N_m: number of codebooks
     :param N_dim: dimension size of original embedding
@@ -60,7 +60,7 @@ def compress_word_embedding(N_k, N_m, N_dim, N_h=None):
 
 def compress_word_embedding_simple(N_k, N_m, N_dim, F_temperature, N_h=None):
     """
-    (Variational) Auto-Encoder for compressing various embeddings, i.e. Word Embedding
+    (Denoising) Auto-Encoder for compressing various embeddings, i.e. Word Embedding
     :param N_k: number of codeword vectors
     :param N_m: number of codebooks
     :param N_dim: dimension size of original embedding
