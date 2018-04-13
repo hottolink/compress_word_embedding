@@ -48,7 +48,7 @@ def compress_word_embedding_simple(N_k, N_m, N_dim, F_temperature, N_h=None):
     lst_d = [softmax_layer(d_dash) for d_dash in lst_d_dash]
     # Decoder: {d_i} -> {x'_i} -> x'
     lst_v_dec = [Dense(units=N_dim, activation=None, use_bias=False, name="decoder_%d" % i )(d) for i, d in enumerate(lst_d)]
-    ### sum vectors
+    ### sum up vectors
     vec_x_dec = Add(name="decoder_add")(lst_v_dec)
 
     # construct model proto
