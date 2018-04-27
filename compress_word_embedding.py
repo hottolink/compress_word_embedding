@@ -12,13 +12,12 @@ import numpy as np
 from keras.optimizers import Adam
 from keras.callbacks import TerminateOnNaN
 from keras_tqdm import TQDMCallback
-from pydash import chunk
+
 
 wd = os.path.dirname(__file__)
 wd = "." if wd == "" else wd
 os.chdir(wd)
 
-from helper import sample_gumbel_noise
 from model_template.losses import squared_error
 from model_template.neuralnet import compress_word_embedding_simple
 
